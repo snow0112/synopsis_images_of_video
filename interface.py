@@ -47,7 +47,8 @@ from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
         QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QWidget)
-
+from PyQt5.QtWidgets import QMainWindow, QGridLayout
+from PyQt5.QtGui import QPixmap
 
 class VideoPlayer(QWidget):
 
@@ -89,16 +90,30 @@ class VideoPlayer(QWidget):
         controlLayout.addWidget(self.playButton)
         controlLayout.addWidget(self.pauseButton)
         controlLayout.addWidget(self.stopButton)
+
         positionLayout = QHBoxLayout()
         positionLayout.setContentsMargins(0, 0, 0, 0)
         positionLayout.addWidget(openButton)
         positionLayout.addWidget(self.positionSlider)
+
+        class pictureWidget(QWidget):
+        	def __init__(self):
+        		super().__init__()
+
+        	self.im = QPixmap("test.jpg")
+        	self.label = QLabel()
+        	self.label.setPixmap(self.im)
+
+        	self.grid = QGridLayout()
+        	self.grid.addWidget(self.label,1,1)
+        	
 
         layout = QVBoxLayout()
         layout.addWidget(videoWidget)
         layout.addLayout(controlLayout)
         layout.addLayout(positionLayout)
         layout.addWidget(self.errorLabel)
+        layout.addWidget(pictureWidget())
 
         self.setLayout(layout)
 
@@ -107,6 +122,7 @@ class VideoPlayer(QWidget):
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
         self.mediaPlayer.error.connect(self.handleError)
+
 
     def openFile(self):
         fileName, _ = QFileDialog.getOpenFileName(self, "Open Movie",
@@ -122,28 +138,16 @@ class VideoPlayer(QWidget):
     def play(self):
     	if self.mediaPlayer.state() != QMediaPlayer.PlayingState:
     		self.mediaPlayer.play()
-    	#self.playButton.setEnabled(False)
-    	#self.pauseButton.setEnabled(True)
-    	#self.stopButton.setEnabled(True)
-        
-        #if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-        #    self.mediaPlayer.pause()
-        #else:
-        #    self.mediaPlayer.play()
+    	
 
     def pause(self):
     	if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
     		self.mediaPlayer.pause()
-    	#self.playButton.setEnabled(True)
-    	#self.pauseButton.setEnabled(False)
-    	#self.stopButton.setEnabled(False)
+    	
 
     def stop(self):
     	if self.mediaPlayer.state() != QMediaPlayer.StoppedState:
     		self.mediaPlayer.stop()
-    	#self.playButton.setEnabled(True)
-    	#self.pauseButton.setEnabled(False)
-    	#self.stopButton.setEnabled(False)
 
 
     def mediaStateChanged(self, state):
@@ -165,7 +169,7 @@ class VideoPlayer(QWidget):
         self.mediaPlayer.setPosition(position)
 
     def handleError(self):
-        self.playButton.setEnabled(False)
+        #self.playButton.setEnabled(False)
         self.errorLabel.setText("Error: " + self.mediaPlayer.errorString())
 
 
@@ -180,3 +184,4 @@ if __name__ == '__main__':
     player.show()
 
     sys.exit(app.exec_())
+
