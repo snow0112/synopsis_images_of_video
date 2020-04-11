@@ -96,16 +96,12 @@ class VideoPlayer(QWidget):
         positionLayout.addWidget(openButton)
         positionLayout.addWidget(self.positionSlider)
 
-        class pictureWidget(QWidget):
-        	def __init__(self):
-        		super().__init__()
+        
 
-        	self.im = QPixmap("test.jpg")
-        	self.label = QLabel()
-        	self.label.setPixmap(self.im)
-
-        	self.grid = QGridLayout()
-        	self.grid.addWidget(self.label,1,1)
+        self.im = QPixmap("test.jpg")
+        self.imlabel = QLabel()
+        self.imlabel.setPixmap(self.im)
+        
         	
 
         layout = QVBoxLayout()
@@ -113,7 +109,7 @@ class VideoPlayer(QWidget):
         layout.addLayout(controlLayout)
         layout.addLayout(positionLayout)
         layout.addWidget(self.errorLabel)
-        layout.addWidget(pictureWidget())
+        layout.addWidget(self.imlabel)
 
         self.setLayout(layout)
 
