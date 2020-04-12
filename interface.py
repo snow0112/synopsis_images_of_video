@@ -63,17 +63,17 @@ class VideoPlayer(QWidget):
         openButton.clicked.connect(self.openFile)
 
         self.playButton = QPushButton()
-        self.playButton.setEnabled(False)
+        self.playButton.setEnabled(True)
         self.playButton.setText("Play")
         self.playButton.clicked.connect(self.play)
 
         self.pauseButton = QPushButton()
-        self.pauseButton.setEnabled(False)
+        self.pauseButton.setEnabled(True)
         self.pauseButton.setText("Pause")
         self.pauseButton.clicked.connect(self.pause)
 
         self.stopButton = QPushButton()
-        self.stopButton.setEnabled(False)
+        self.stopButton.setEnabled(True)
         self.stopButton.setText("Stop")
         self.stopButton.clicked.connect(self.stop)
 
@@ -96,20 +96,17 @@ class VideoPlayer(QWidget):
         positionLayout.addWidget(openButton)
         positionLayout.addWidget(self.positionSlider)
 
-        
-
         self.im = QPixmap("test.jpg")
-        self.imlabel = QLabel()
-        self.imlabel.setPixmap(self.im)
-        
-        	
+        self.imLabel = QLabel()
+        self.imLabel.setPixmap(self.im)
+        #self.imLabel.clicked.connect(self.pause)
 
         layout = QVBoxLayout()
         layout.addWidget(videoWidget)
         layout.addLayout(controlLayout)
-        layout.addLayout(positionLayout)
+        #layout.addLayout(positionLayout)
         layout.addWidget(self.errorLabel)
-        layout.addWidget(self.imlabel)
+        layout.addWidget(self.imLabel)
 
         self.setLayout(layout)
 
@@ -118,6 +115,9 @@ class VideoPlayer(QWidget):
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
         self.mediaPlayer.error.connect(self.handleError)
+
+        fileName = "video_1.avi"
+        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
 
 
     def openFile(self):
