@@ -7,6 +7,8 @@ if __name__ == "__main__":
 
     """
     Test 1: test get all rgb files function, save result in list of list
+    @ path: CSCI576ProjectMedia folder position
+    @ list_of_list: all the rgb files in each folder
     """
     path = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia"
     list_of_list = utiltool.get_filelist(path)
