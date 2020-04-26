@@ -22,3 +22,4 @@ for i in range(1,9):
 	im1 = cv2.hconcat([im1, im2])
 
 cv2.imwrite('./test/testcombine.jpg', im1)
+
