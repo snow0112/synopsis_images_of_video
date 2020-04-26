@@ -3,8 +3,11 @@ from skimage.measure import compare_ssim
 import numpy as np
 from PIL import Image
 # import argparse
-import imutils
-import cv2
+#import imutils
+#import cv2
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 
 """
 * The score: represents the structural similarity index between the two input images. 
@@ -103,3 +106,13 @@ def savergbfile(arr3d, w):
 	binary_format = bytearray(arr)
 	file.write(binary_format)
 	file.close()
+
+
+def readrgbtoQImage(fileName, width = 352, height = 288):
+    arr3d = readrgbfile(fileName, width =  width)
+    img = QImage(width, height, QImage.Format_RGB32)
+    for x in range(width):
+        for y in range(height):
+            value = qRgb(arr3d[y][x][0], arr3d[y][x][1], arr3d[y][x][2] )
+            img.setPixel( x, y , value )
+    return img
