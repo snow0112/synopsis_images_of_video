@@ -31,20 +31,6 @@ readrgbfile is a function read a rgb file and output an 3darray
 only use numpy and pillow is only used to form image, show and save
 combine_rgbfile is a function combine rgb files from a list
 """
-def readrgbfile(filename, width = 352, height = 288):
-
-	file = open(filename,"rb")
-	byte = file.read(1)
-	arr = []
-	while byte:
-		a = int.from_bytes(byte, byteorder = "big")
-		arr.append(a)
-		byte = file.read(1)
-	file.close()
-	arr = np.array(arr, dtype=np.uint8)	
-	arr3d = arr.reshape((3, height, width)).transpose()
-	arr3d = arr3d.transpose(1,0,2)
-	return arr3d
 
 
 def readrgbfile(filename, width = 352, height = 288):
