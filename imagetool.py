@@ -1,10 +1,12 @@
 # import the necessary packages
 from skimage.measure import compare_ssim
+from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import peak_signal_noise_ratio as psnr
 import numpy as np
 from PIL import Image
 # import argparse
-#import imutils
-#import cv2
+# import imutils
+import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -14,16 +16,25 @@ from PyQt5.QtGui import *
     This value can fall into the range [-1, 1] with a value of one being a “perfect match”.
 * The diff:  contains the actual image differences between the two input images 
 """
+
 def get_img_diff(imageA, imageB):
     # convert the images to grayscale
-    grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
-    grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
+    grayA = cv2.cvtColor(imageA, cv2.COLOR_RGB2GRAY)
+    grayB = cv2.cvtColor(imageB, cv2.COLOR_RGB2GRAY)
 
     # compute the Structural Similarity Index (SSIM) between the two
     # images, ensuring that the difference image is returned
-    (score, diff) = compare_ssim(grayA, grayB, full=True)
-    # diff = (diff * 255).astype("uint8")
-    return score, diff
+    (score_ssim, diff) = ssim(grayA, grayB, gaussian_weightsbool=True, full=True)
+    # print(diff)
+    # compute the Histogram feasure between the two images [0, 1]
+    # hist1 = cv2.calcHist([grayA], [0], None, [256], [0.0,255.0]) 
+    # hist2 = cv2.calcHist([grayB], [0], None, [256], [0.0,255.0]) 
+    hist1 = cv2.calcHist([imageA], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+    hist2 = cv2.calcHist([imageB], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+    score_hist = cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL)
+
+    score = 0.7 * score_ssim + 0.3 * score_hist
+    return score
 
 
 """
@@ -66,17 +77,27 @@ def combine_rgbfiles(foldername, filelist):
 
 	for filename in filelist:
 		if synopsis:
-			new_img = Image.fromarray( readrgbfile(foldername+filename) )
+			new_img = Image.fromarray(readrgbfile(foldername+filename) )
 			synopsis = get_concat_h(synopsis, new_img)
 		else:
-			synopsis = Image.fromarray( readrgbfile(foldername+filename) )
+			synopsis = Image.fromarray(readrgbfile(foldername+filename) )
 
 	arr3d = np.array(synopsis)
 	savergbfile(arr3d, len(filelist))
 
 	#synopsis.save("test_synopis.png")
 	
+def combine_rgbimages(image_list):
+	synopsis = None
+	for img in image_list:
+		if synopsis:
+			new_img = Image.fromarray(img)
+			synopsis = get_concat_h(synopsis, new_img)
+		else:
+			synopsis = Image.fromarray(img)
+	return np.array(synopsis)
 
+	
 def savergbfile(arr3d, w):
 	#print("save file")
 	print(arr3d.shape)
@@ -102,3 +123,8 @@ def readrgbtoQImage(fileName, width = 352, height = 288):
             value = qRgb(arr3d[y][x][0], arr3d[y][x][1], arr3d[y][x][2] )
             img.setPixel( x, y , value )
     return img
+
+
+def writeRGBToJPG(rgbPath, jpgPath): 
+    img = readrgbfile(rgbPath)
+    cv2.imwrite(jpgPath, cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
