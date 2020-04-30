@@ -7,6 +7,8 @@ from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 import imagetool as readrgb
 import time
+from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
+from PyQt5.QtMultimediaWidgets import QVideoWidget
 
 class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow): 
     def __init__(self):
@@ -31,12 +33,28 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.total_length = 880 # synopsis from 0 to 880
 
         self.frames = []
-        for num in range(290, 300):
+        for num in range(299, 300):
             fileName = "image-"+str(num).zfill(4)+".rgb"
             #print(fileName)
             video = readrgb.readrgbtoQImage(self.folderName+fileName)
             #pixmap_vdo = QPixmap.fromImage(video)
             self.frames.append( QPixmap.fromImage(video) )
+
+        self.sound = QVideoWidget()
+        self.sound.setGeometry(QtCore.QRect(859, 10, 111, 21))
+        self.sound.setObjectName("sound")
+
+        self.soundPlayer = QMediaPlayer(None, QMediaPlayer.LowLatency)
+        #self.soundPlayer.setVideoOutput(videoWidget)
+        #self.soundPlayer.stateChanged.connect(self.mediaStateChanged)
+        #self.soundPlayer.positionChanged.connect(self.positionChanged)
+        #self.soundPlayer.durationChanged.connect(self.durationChanged)
+        #self.soundPlayer.error.connect(self.handleError)
+
+        #fileName = "video_1.avi"
+        #self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
+        self.soundPlayer.setAudioRole(2)
+        self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile("video_1.wav")))
        
     def play(self):
         print("play")
@@ -71,6 +89,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         video = QtGui.QMovie("test.gif")
         self.video.setMovie(video)
         video.start()
+        self.soundPlayer.play()
         #print(event.pos().x(), event.pos().y())
         
     #def openFile(self):
