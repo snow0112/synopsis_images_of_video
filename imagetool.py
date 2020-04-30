@@ -157,3 +157,10 @@ def rgb2avi(foldername, start_frame, end_frame, save_name):
 	for i in range(len(array)):
 		out.write(array[i])
 	out.release()
+
+
+
+foldername = "../../576RGBVideo1/"
+for num in range(1, 100):
+    filename = "image-"+str(num).zfill(4)+".rgb"
+    rgb2png(foldername+filename)

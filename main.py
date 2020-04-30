@@ -32,13 +32,13 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.synopsis.mousePressEvent = self.getPos
         self.total_length = 880 # synopsis from 0 to 880
 
-        self.frames = []
-        for num in range(299, 300):
-            fileName = "image-"+str(num).zfill(4)+".rgb"
-            #print(fileName)
-            video = readrgb.readrgbtoQImage(self.folderName+fileName)
-            #pixmap_vdo = QPixmap.fromImage(video)
-            self.frames.append( QPixmap.fromImage(video) )
+        #self.frames = []
+        #for num in range(299, 300):
+        #    fileName = "image-"+str(num).zfill(4)+".rgb"
+        #    #print(fileName)
+        #    video = readrgb.readrgbtoQImage(self.folderName+fileName)
+        #    #pixmap_vdo = QPixmap.fromImage(video)
+        #    self.frames.append( QPixmap.fromImage(video) )
 
         self.sound = QVideoWidget()
         self.sound.setGeometry(QtCore.QRect(859, 10, 111, 21))
@@ -58,38 +58,57 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
        
     def play(self):
         print("play")
-        for num in range(250, 300):
-            fileName = "image-"+str(num).zfill(4)+".rgb"
+        self.paused = 0
+        if self.soundPlayer.state() != QMediaPlayer.PlayingState:
+            self.soundPlayer.play()
+        for num in range(self.current_frame, self.end_frame+1):
+            if self.soundPlayer.state() != QMediaPlayer.PlayingState:
+                break
+            fileName = "image-"+str(num).zfill(4)+".png"
             #print(fileName)
-            video = readrgb.readrgbtoQImage(self.folderName+fileName)
-            pixmap_vdo = QPixmap.fromImage(video)
-            self.video.setPixmap(pixmap_vdo)
+            self.video.setPixmap(QtGui.QPixmap(self.folderName+fileName))
             self.video.repaint()
-            time.sleep(0.03)
+            if num == self.end_frame:
+                self.soundPlayer.stop()
+            self.current_frame = num
+            time.sleep(0.03333)
             #print("update")
         #self.video.setPixmap(QtGui.QPixmap("image-0006.jpg"))
 
     def pause(self):
         print("pause")
-        for frame in self.frames:
-            self.video.setPixmap(frame)
-            self.video.repaint()
-            time.sleep(0.03333)  
+        if self.soundPlayer.state() == QMediaPlayer.PlayingState:
+            self.soundPlayer.pause()
+        
+        #for frame in self.frames:
+        #    self.video.setPixmap(frame)
+        #    self.video.repaint()
+        #    time.sleep(0.03333)  
 
     def stop(self):
         print("stop")
-        video = QImage(352, 288, QImage.Format_RGB32)
-        pixmap_vdo = QPixmap.fromImage(video)
-        self.video.setPixmap(pixmap_vdo)
-        self.video.repaint()
+        if self.soundPlayer.state() != QMediaPlayer.StoppedState:
+            self.soundPlayer.stop()
+        self.current_frame = self.end_frame
+        #video = QImage(352, 288, QImage.Format_RGB32)
+        #pixmap_vdo = QPixmap.fromImage(video)
+        #self.video.setPixmap(pixmap_vdo)
+        #self.video.repaint()
 
     def getPos(self, event):
         x = event.pos().x()
-        print(x)
-        video = QtGui.QMovie("test.gif")
-        self.video.setMovie(video)
-        video.start()
+        y = event.pos().y()
+        #print(x)
+        self.start_frame = 1
+        self.start_time = 1
+        self.end_frame = 100
+        self.current_frame = self.start_frame
+        #video = QtGui.QMovie("test.gif")
+        #self.video.setMovie(video)
+        #video.start()
+        self.soundPlayer.setPosition(1)
         self.soundPlayer.play()
+        self.play()
         #print(event.pos().x(), event.pos().y())
         
     #def openFile(self):
