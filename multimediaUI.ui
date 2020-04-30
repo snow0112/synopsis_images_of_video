@@ -129,6 +129,16 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="sound" native="true">
+          <property name="geometry">
+           <rect>
+            <x>859</x>
+            <y>10</y>
+            <width>111</width>
+            <height>21</height>
+           </rect>
+          </property>
+         </widget>
         </widget>
        </widget>
       </item>
