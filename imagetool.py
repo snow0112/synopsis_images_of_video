@@ -1,7 +1,7 @@
 # import the necessary packages
-#from skimage.measure import compare_ssim
-#from skimage.metrics import structural_similarity as ssim
-#from skimage.metrics import peak_signal_noise_ratio as psnr
+from skimage.measure import compare_ssim
+from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import peak_signal_noise_ratio as psnr
 import numpy as np
 from PIL import Image
 # import argparse
@@ -63,6 +63,12 @@ def readrgbfile(filename, width = 352, height = 288):
 	# new_img.save("test_synopis.png")
 	#new_img.show()
 	return arr3d
+
+def rgb2png(filename, width = 352, height = 288):
+	arr3d = readrgbfile(filename, width, height)
+	new_img = Image.fromarray(arr3d, mode = None)
+	new_img.save(filename[:-3] + "png")
+
 
 def get_concat_h(im1, im2):
 	#print(im1.width)
