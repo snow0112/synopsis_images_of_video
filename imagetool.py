@@ -1,10 +1,10 @@
 # import the necessary packages
-from skimage.measure import compare_ssim
+#from skimage.measure import compare_ssim
 import numpy as np
 from PIL import Image
 # import argparse
 #import imutils
-#import cv2
+import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -102,3 +102,29 @@ def readrgbtoQImage(fileName, width = 352, height = 288):
             value = qRgb(arr3d[y][x][0], arr3d[y][x][1], arr3d[y][x][2] )
             img.setPixel( x, y , value )
     return img
+
+def rgb2gif(foldername, start_frame, end_frame, save_name):
+	array = []
+	for num in range(start_frame, end_frame):
+		fileName = "image-"+str(num).zfill(4)+".rgb"
+		arr3d = readrgbfile(foldername+fileName)
+		img = Image.fromarray(arr3d, mode = None)
+		array.append(img)
+	array[0].save(save_name, save_all = True, append_images = array[1:], duration = 1000/30, loop = 0 )
+
+def rgb2avi(foldername, start_frame, end_frame, save_name):
+	array = []
+	for num in range(start_frame, end_frame):
+		fileName = "image-"+str(num).zfill(4)+".rgb"
+		arr3d = readrgbfile(foldername+fileName)
+		img = Image.fromarray(arr3d, mode = None)
+		array.append(img.convert('RGB') )
+	#array.astype(np.float32)
+
+	out = cv2.VideoWriter('test.avi', 0,1,(352,288))
+	for i in range(len(array)):
+		out.write(array[i])
+	out.release()
+
+#rgb2gif( "../../576RGBVideo1/", 250, 300, "test.gif")
+#rgb2avi( "../../576RGBVideo1/", 290, 300, "test.avi")
