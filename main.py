@@ -61,19 +61,20 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.paused = 0
         if self.soundPlayer.state() != QMediaPlayer.PlayingState:
             self.soundPlayer.play()
-        for num in range(self.current_frame, self.end_frame+1):
-            if self.soundPlayer.state() != QMediaPlayer.PlayingState:
-                break
-            fileName = "image-"+str(num).zfill(4)+".png"
+
+        while 0: # self.soundPlayer.state() == QMediaPlayer.PlayingState:
+            fileName = "image-"+str(self.current_frame).zfill(4)+".rgb"
             #print(fileName)
-            self.video.setPixmap(QtGui.QPixmap(self.folderName+fileName))
+            video = readrgb.readrgbtoQImage(self.folderName+fileName)
+            pixmap_vdo = QPixmap.fromImage(video)
+            self.video.setPixmap(pixmap_vdo)
             self.video.repaint()
-            if num == self.end_frame:
+            if self.current_frame == self.end_frame:
                 self.soundPlayer.stop()
-            self.current_frame = num
+                break
+            self.current_frame += 1
             time.sleep(0.03333)
-            #print("update")
-        #self.video.setPixmap(QtGui.QPixmap("image-0006.jpg"))
+
 
     def pause(self):
         print("pause")
@@ -98,6 +99,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
     def getPos(self, event):
         x = event.pos().x()
         y = event.pos().y()
+        print(str(x)+"  "+str(y))
         #print(x)
         self.start_frame = 1
         self.start_time = 1
