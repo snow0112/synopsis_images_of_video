@@ -26,8 +26,9 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         
         #synopsis = QImage(352*5, 288, QImage.Format_RGB32)
         #pixmap_syn = QtGui.QPixmap("test_synopis.png")
-        synopsis = readrgb.readrgbtoQImage("test-MySynopsis.rgb", 352*5, 288)
+        synopsis = readrgb.readrgbtoQImage("test-MySynopsis.rgb", 352*15, 288)
         pixmap_syn = QPixmap.fromImage(synopsis)
+        #pixmap_syn.scaledToHeight(100)
         self.synopsis.setPixmap(pixmap_syn)
         self.synopsis.mousePressEvent = self.getPos
         self.total_length = 880 # synopsis from 0 to 880
@@ -62,13 +63,14 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         if self.soundPlayer.state() != QMediaPlayer.PlayingState:
             self.soundPlayer.play()
 
-        while 0: # self.soundPlayer.state() == QMediaPlayer.PlayingState:
+        while 1: # self.soundPlayer.state() == QMediaPlayer.PlayingState:
             fileName = "image-"+str(self.current_frame).zfill(4)+".rgb"
             #print(fileName)
             video = readrgb.readrgbtoQImage(self.folderName+fileName)
             pixmap_vdo = QPixmap.fromImage(video)
             self.video.setPixmap(pixmap_vdo)
             self.video.repaint()
+            break
             if self.current_frame == self.end_frame:
                 self.soundPlayer.stop()
                 break
