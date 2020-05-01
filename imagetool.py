@@ -45,7 +45,6 @@ combine_rgbfile is a function combine rgb files from a list
 
 
 def readrgbfile(filename, width = 352, height = 288):
-
 	file = open(filename,"rb")
 	byte = file.read(1)
 	arr = []
@@ -58,10 +57,13 @@ def readrgbfile(filename, width = 352, height = 288):
 	arr3d = arr.reshape((3, height, width)).transpose()
 	#print(arr3d.shape)
 	arr3d = arr3d.transpose(1,0,2)
-	#print(arr3d.shape)
-	# new_img = Image.fromarray(arr3d, mode = None)
-	# new_img.save("test_synopis.png")
-	#new_img.show()
+	return arr3d
+
+def fast_readrgbfile(filename, width = 352, height = 288):
+	f = open(filename,"rb")
+	image_bytes = f.read()
+	decoded = np.fromstring(image_bytes, dtype=np.uint8)
+	arr3d = decoded.reshape((3, height, width)).transpose().transpose(1,0,2)
 	return arr3d
 
 def rgb2png(filename, width = 352, height = 288):
@@ -159,8 +161,8 @@ def rgb2avi(foldername, start_frame, end_frame, save_name):
 	out.release()
 
 
-
-foldername = "../../576RGBVideo1/"
-for num in range(1, 100):
-    filename = "image-"+str(num).zfill(4)+".rgb"
-    rgb2png(foldername+filename)
+# if __name__ == "__main__":
+	# foldername = "../../576RGBVideo1/"
+	# for num in range(1, 100):
+	# 	filename = "image-"+str(num).zfill(4)+".rgb"
+	# 	rgb2png(foldername+filename)
