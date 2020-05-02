@@ -170,11 +170,11 @@ def rgb2avi(foldername, start_frame, end_frame, save_name):
 	# 	rgb2png(foldername+filename)
 
 
-images = []
-p = 0
-for i in range(1,1501,100):
-	images.append(fast_readrgbfile("../../576RGBVideo1/"+"image-"+str(i).zfill(4)+".rgb"))
-	p+=1
-arr3d = combine_rgbimages(images)
-savergbfile(arr3d,p)
-print(p)
+# images = []
+# p = 0
+# for i in range(1,1501,100):
+# 	images.append(fast_readrgbfile("../../576RGBVideo1/"+"image-"+str(i).zfill(4)+".rgb"))
+# 	p+=1
+# arr3d = combine_rgbimages(images)
+# savergbfile(arr3d,p)
+# print(p)
