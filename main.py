@@ -110,7 +110,6 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         video = readrgb.readrgbtoQImage(self.fileName)
         pixmap_vdo = QPixmap.fromImage(video)
         self.video.setPixmap(pixmap_vdo)
-        
 
     def play_video(self):
         self.current_frame = self.start_frame

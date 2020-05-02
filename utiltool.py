@@ -1,6 +1,7 @@
 import os
 import imagetool
 import cv2
+import json
 
 """
 @ Input: root folder path 
@@ -25,8 +26,29 @@ def get_filelist(folder_path):
 
     return listoflist
 
+def metadata_addvideo(folder_name, start_frame, end_frame, audio_file):
+    videodict = {}
+    videodict["tp"] = 1
+    videodict["folder"] = folder_name
+    videodict["start"] = start_frame
+    videodict["end"] = end_frame
+    videodict["audio"] = audio_file
+    return videodict
 
+def metadata_addimage(file_name):
+    imagedict = {}
+    imagedict["tp"] = 0
+    imagedict["path"] = file_name
+    return imagedict
 
+metadata = []
+metadata.append( metadata_addvideo("../../576RGBVideo1/", 1, 100,"../../video_1.wav") )
+metadata.append( metadata_addvideo("../../576RGBVideo2/", 1, 100,"../../video_2.wav") )
+metadata.append( metadata_addimage("../../Image/RGB/image-0003.rgb") )
+#metajson = json.dumps(metadata)
+with open('metadata.txt', 'w') as json_file:
+  json.dump(metadata, json_file)
+#print(metajson)
 
 
 # if __name__ == "__main__":
