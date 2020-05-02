@@ -9,7 +9,6 @@ import imagetool as readrgb
 import time
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
-
 import traceback, sys
 
 class Img_Thread(QThread):
@@ -23,7 +22,7 @@ class Img_Thread(QThread):
 
     def run(self):
         for i in range(self.n):
-            #print("i"+str(i))
+            #print("i= "+str(i))
             if self.kill == 1:
                 break
             try:
@@ -32,8 +31,7 @@ class Img_Thread(QThread):
                 break
             if i == self.n-1:
                 self.signal.emit(0)
-            self.msleep(33)
-        
+            self.msleep(32)
 
 class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow): 
     def __init__(self):
@@ -61,6 +59,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
         self.soundPlayer = QMediaPlayer(None, QMediaPlayer.LowLatency)
         self.soundPlayer.setAudioRole(2)
+
         self.v_thread = Img_Thread(self.updateframe)
         self.v_thread.signal.connect(self.stop)
        
@@ -99,8 +98,8 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         if self.soundPlayer.state() != QMediaPlayer.StoppedState:
             self.soundPlayer.stop()
         self.v_thread.kill = 1
-        self.current_frame = self.end_frame
-        self.play_btn.setEnabled(False)
+        self.current_frame = self.start_frame
+        self.play_btn.setEnabled(True)
         self.pause_btn.setEnabled(False)
         self.stop_btn.setEnabled(False)
 
@@ -118,22 +117,25 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.play()
 
     def getfiles(self, idx):
-        # for video
-        self.folderName = "../../576RGBVideo1/"
-        # self.folderName = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/576RGBVideo1/"
-        self.start_frame = 1
-        self.end_frame = 1000
-        self.start_time = 1
-        self.audio_file = "video_1.wav"
-        #self.audio_file = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/video_1.wav"
-        # for image
-        self.fileName = "image-0003.rgb"
-        return idx < 1000 # tp = 1: video ; tp = 0: image
+        tp = 1 # tp = 1: video ; tp = 0: image
+        if tp == 1:
+            # for video
+            self.folderName = "../../576RGBVideo1/"
+            # self.folderName = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/576RGBVideo1/"
+            self.start_frame = 1
+            self.end_frame = 1000
+            self.start_time = 1
+            self.audio_file = "video_1.wav"
+            #self.audio_file = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/video_1.wav"
+        else:
+            # for image
+            self.fileName = "image-0003.rgb"
+        return tp # tp = 1: video ; tp = 0: image
 
     def getPos(self, event):
         x = event.pos().x()
-        print(x)
-        tp = self.getfiles(x//1)
+        #print(x)
+        tp = self.getfiles(x//1) # x//(width of an image)
         if self.soundPlayer.state() == QMediaPlayer.PlayingState:
             self.v_thread.kill = 1
             time.sleep(0.03) # for racing
