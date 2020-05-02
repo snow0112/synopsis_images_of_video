@@ -10,6 +10,7 @@ import time
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 import traceback, sys
+import json
 
 class Img_Thread(QThread):
     signal = pyqtSignal('PyQt_PyObject')
@@ -45,13 +46,21 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.play_btn.setEnabled(False)
         self.pause_btn.setEnabled(False)
         self.stop_btn.setEnabled(False)
-        
+
+        #read metadata
+        file_meta = open('metadata.json',"r")
+        self.metadata = json.load(file_meta)
+        self.num_img = len(self.metadata)
+        file_meta.close()
+
         synopsis = readrgb.readrgbtoQImage("test.rgb", 352*25, 288)
+        #synopsis = readrgb.readrgbtoQImage("test.rgb", 352*self.num_img, 288)
         #print(self.synopsis.size())
+        self.total_length = 120*self.num_img # synopsis from 0 to total length
         pixmap_syn = QPixmap.fromImage(synopsis).scaled(3000, 1440, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.synopsis.setPixmap(pixmap_syn)
         self.synopsis.mousePressEvent = self.getPos
-        #self.total_length = 880 # synopsis from 0 to 880
+        
 
         self.sound = QVideoWidget()
         self.sound.setGeometry(QtCore.QRect(859, 10, 111, 21))
@@ -118,25 +127,28 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.play()
 
     def getfiles(self, idx):
-        tp = 1 # tp = 1: video ; tp = 0: image
+        print(idx)
+        if idx >= self.num_img:
+            idx = self.num_img-1
+        tp = self.metadata[idx]["tp"] # tp = 1: video ; tp = 0: image
         if tp == 1:
             # for video
-            self.folderName = "../../576RGBVideo1/"
+            self.folderName = self.metadata[idx]["folder"]#"../../576RGBVideo1/"
             # self.folderName = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/576RGBVideo1/"
-            self.start_frame = 1
-            self.end_frame = 1000
+            self.start_frame = self.metadata[idx]["start"] #1
+            self.end_frame = self.metadata[idx]["end"]#1000
             self.start_time = 1
-            self.audio_file = "video_1.wav"
+            self.audio_file = self.metadata[idx]["audio"]#"video_1.wav"
             #self.audio_file = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/video_1.wav"
-        #else:
+        else:
             # for image
-            self.fileName = "image-0003.rgb"
-        return idx > 1000 # tp = 1: video ; tp = 0: image
+            self.fileName = self.metadata[idx]["path"]#"image-0003.rgb"
+        return tp # tp = 1: video ; tp = 0: image
 
     def getPos(self, event):
         x = event.pos().x()
-        #print(x)
-        tp = self.getfiles(x//1) # x//(width of an image)
+        print(x)
+        tp = self.getfiles(x//120) # x//(width of an image = 120)
         if self.soundPlayer.state() == QMediaPlayer.PlayingState:
             self.v_thread.kill = 1
             time.sleep(0.03) # for racing
