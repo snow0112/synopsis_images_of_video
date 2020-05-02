@@ -53,15 +53,15 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.num_img = len(self.metadata)
         file_meta.close()
 
-        synopsis = readrgb.readrgbtoQImage("test.rgb", 352*25, 288)
-        #synopsis = readrgb.readrgbtoQImage("test.rgb", 352*self.num_img, 288)
+        #synopsis = readrgb.readrgbtoQImage("test.rgb", 352*25, 288)
+        #synopsis = readrgb.readrgbtoQImage("test-MySynopsis.rgb", 352*15, 288)
+        synopsis = readrgb.readrgbtoQImage("test.rgb", 352*self.num_img, 288)
         #print(self.synopsis.size())
         self.total_length = 120*self.num_img # synopsis from 0 to total length
-        pixmap_syn = QPixmap.fromImage(synopsis).scaled(3000, 1440, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pixmap_syn = QPixmap.fromImage(synopsis).scaled(120*self.num_img, 1440, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.synopsis.setPixmap(pixmap_syn)
         self.synopsis.mousePressEvent = self.getPos
         
-
         self.sound = QVideoWidget()
         self.sound.setGeometry(QtCore.QRect(859, 10, 111, 21))
         self.sound.setObjectName("sound")
@@ -127,7 +127,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.play()
 
     def getfiles(self, idx):
-        print(idx)
+        #print(idx)
         if idx >= self.num_img:
             idx = self.num_img-1
         tp = self.metadata[idx]["tp"] # tp = 1: video ; tp = 0: image
@@ -137,7 +137,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
             # self.folderName = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/576RGBVideo1/"
             self.start_frame = self.metadata[idx]["start"] #1
             self.end_frame = self.metadata[idx]["end"]#1000
-            self.start_time = 1
+            self.start_time = (self.start_frame-1)*1000/30
             self.audio_file = self.metadata[idx]["audio"]#"video_1.wav"
             #self.audio_file = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/video_1.wav"
         else:
@@ -147,7 +147,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
     def getPos(self, event):
         x = event.pos().x()
-        print(x)
+        #print(x)
         tp = self.getfiles(x//120) # x//(width of an image = 120)
         if self.soundPlayer.state() == QMediaPlayer.PlayingState:
             self.v_thread.kill = 1

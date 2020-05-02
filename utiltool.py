@@ -42,11 +42,14 @@ def metadata_addimage(file_name):
     return imagedict
 
 metadata = []
-metadata.append( metadata_addvideo("../../576RGBVideo1/", 1, 100,"../../video_1.wav") )
-metadata.append( metadata_addvideo("../../576RGBVideo2/", 1, 100,"../../video_2.wav") )
-metadata.append( metadata_addimage("../../Image/RGB/image-0003.rgb") )
+for i in range(5):
+    metadata.append( metadata_addvideo("../../576RGBVideo1/", 1, 100,"../../video_1.wav") )
+    metadata.append( metadata_addvideo("../../576RGBVideo2/", 1, 100,"../../video_2.wav") )
+    metadata.append( metadata_addvideo("../../576RGBVideo3/", 1, 90,"../../video_3.wav") )
+    metadata.append( metadata_addvideo("../../576RGBVideo4/", 1, 100,"../../video_4.wav") )
+    metadata.append( metadata_addimage("../../Image/RGB/image-0003.rgb") )
 #metajson = json.dumps(metadata)
-with open('metadata.txt', 'w') as json_file:
+with open('metadata.json', 'w') as json_file:
   json.dump(metadata, json_file)
 #print(metajson)
 
