@@ -38,7 +38,7 @@ class Ui_MainWindow(object):
         self.video.setSizePolicy(sizePolicy)
         self.video.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.video.setText("")
-        self.video.setScaledContents(True)
+        self.video.setScaledContents(False)
         self.video.setAlignment(QtCore.Qt.AlignCenter)
         self.video.setWordWrap(False)
         self.video.setObjectName("video")

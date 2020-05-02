@@ -41,7 +41,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #self.toolButton.clicked.connect(self.openFile)
 
         self.folderName = "../../576RGBVideo1/"
-
+        # self.folderName = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/576RGBVideo1/"
         self.play_btn.clicked.connect(self.play)
         self.pause_btn.clicked.connect(self.pause)
         self.stop_btn.clicked.connect(self.stop)
@@ -74,7 +74,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
         self.soundPlayer.setAudioRole(2)
         self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile("video_1.wav")))
-
+        # self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile("/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/video_1.wav")))
         self.v_thread = Img_Thread(self.updateframe)
         self.v_thread.signal.connect(self.stop)
 
