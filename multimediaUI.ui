@@ -157,7 +157,7 @@
            <item>
             <widget class="QLabel" name="synopsis">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Ignored">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Ignored">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>

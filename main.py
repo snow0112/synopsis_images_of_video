@@ -10,6 +10,29 @@ import time
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 
+import traceback, sys
+
+class Img_Thread(QThread):
+    signal = pyqtSignal('PyQt_PyObject')
+
+    def __init__(self, fn):
+        QThread.__init__(self)
+        self.fn = fn
+        self.n = 0
+        self.kill = 0
+
+    def run(self):
+        for i in range(self.n):
+            if self.kill == 1:
+                break
+            self.fn()
+            time.sleep(0.03)
+        self.signal.emit("finished")
+
+        
+        
+        
+
 class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow): 
     def __init__(self):
         super().__init__()
@@ -56,47 +79,50 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
         self.soundPlayer.setAudioRole(2)
         self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile("video_1.wav")))
+
+        self.v_thread = Img_Thread(self.updateframe)
+
+        
        
     def play(self):
         print("play")
         self.paused = 0
         if self.soundPlayer.state() != QMediaPlayer.PlayingState:
             self.soundPlayer.play()
+        self.image_thread()
 
-        while 1: # self.soundPlayer.state() == QMediaPlayer.PlayingState:
-            fileName = "image-"+str(self.current_frame).zfill(4)+".rgb"
-            #print(fileName)
-            video = readrgb.readrgbtoQImage(self.folderName+fileName)
-            pixmap_vdo = QPixmap.fromImage(video)
-            self.video.setPixmap(pixmap_vdo)
-            self.video.repaint()
-            break
-            if self.current_frame == self.end_frame:
-                self.soundPlayer.stop()
-                break
-            self.current_frame += 1
-            time.sleep(0.03333)
+
+    def updateframe(self):
+        print(self.current_frame)
+        fileName = "image-"+str(self.current_frame).zfill(4)+".rgb"
+        video = readrgb.readrgbtoQImage(self.folderName+fileName)
+        pixmap_vdo = QPixmap.fromImage(video)
+        self.video.setPixmap(pixmap_vdo)
+        #self.video.repaint()
+        self.current_frame += 1
+        
+
+    def image_thread(self):
+        
+        self.v_thread.n = self.end_frame - self.current_frame
+        self.v_thread.kill = 0
+        self.v_thread.start()
 
 
     def pause(self):
         print("pause")
         if self.soundPlayer.state() == QMediaPlayer.PlayingState:
             self.soundPlayer.pause()
+        self.v_thread.kill = 1
         
-        #for frame in self.frames:
-        #    self.video.setPixmap(frame)
-        #    self.video.repaint()
-        #    time.sleep(0.03333)  
 
     def stop(self):
         print("stop")
         if self.soundPlayer.state() != QMediaPlayer.StoppedState:
             self.soundPlayer.stop()
+        self.v_thread.kill = 1
         self.current_frame = self.end_frame
-        #video = QImage(352, 288, QImage.Format_RGB32)
-        #pixmap_vdo = QPixmap.fromImage(video)
-        #self.video.setPixmap(pixmap_vdo)
-        #self.video.repaint()
+
 
     def getPos(self, event):
         x = event.pos().x()
@@ -105,7 +131,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #print(x)
         self.start_frame = 1
         self.start_time = 1
-        self.end_frame = 100
+        self.end_frame = 1000
         self.current_frame = self.start_frame
         #video = QtGui.QMovie("test.gif")
         #self.video.setMovie(video)
