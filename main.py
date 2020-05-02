@@ -51,9 +51,9 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         
         #synopsis = QImage(352*5, 288, QImage.Format_RGB32)
         #pixmap_syn = QtGui.QPixmap("test_synopis.png")
-        synopsis = readrgb.readrgbtoQImage("test-MySynopsis.rgb", 352*15, 288)
+        synopsis = readrgb.readrgbtoQImage("test.rgb", 352*25, 288)
         print(self.synopsis.size())
-        pixmap_syn = QPixmap.fromImage(synopsis).scaled(1760, 1440, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pixmap_syn = QPixmap.fromImage(synopsis).scaled(3000, 1440, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         #pixmap_syn.scaledToHeight(100)
         self.synopsis.setPixmap(pixmap_syn)
         self.synopsis.mousePressEvent = self.getPos

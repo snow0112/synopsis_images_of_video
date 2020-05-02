@@ -117,21 +117,16 @@ def savergbfile(arr3d, w):
 	arr = arr3d.reshape((totallength,))
 	#print(arr.shape)
 	#print(arr[:10])
-	file = open("test-MySynopsis.rgb", "wb")
+	# file = open("test-MySynopsis.rgb", "wb")
+	file = open("test.rgb", "wb")
 	binary_format = bytearray(arr)
 	file.write(binary_format)
 	file.close()
-
-
+    
 def readrgbtoQImage(fileName, width = 352, height = 288):
     arr3d = fast_readrgbfile(fileName, width =  width)
     bytesPerLine = 3*width
     img = QImage(arr3d.tobytes(), width, height, bytesPerLine, QImage.Format_RGB888)
-    #img = QImage(width, height, QImage.Format_RGB32)
-    #for x in range(width):
-    #    for y in range(height):
-    #        value = qRgb(arr3d[y][x][0], arr3d[y][x][1], arr3d[y][x][2] )
-    #        img.setPixel( x, y , value )
     return img
 
 
