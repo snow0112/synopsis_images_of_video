@@ -23,14 +23,13 @@ class Img_Thread(QThread):
 
     def run(self):
         for i in range(self.n):
+            #print("i"+str(i))
             if self.kill == 1:
                 break
             self.fn()
-            time.sleep(0.03)
-        self.signal.emit("finished")
-
-        
-        
+            if i == self.n-1:
+                self.signal.emit(0)
+            self.msleep(33)
         
 
 class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow): 
@@ -46,6 +45,9 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.play_btn.clicked.connect(self.play)
         self.pause_btn.clicked.connect(self.pause)
         self.stop_btn.clicked.connect(self.stop)
+        self.play_btn.setEnabled(False)
+        self.pause_btn.setEnabled(False)
+        self.stop_btn.setEnabled(False)
         
         #synopsis = QImage(352*5, 288, QImage.Format_RGB32)
         #pixmap_syn = QtGui.QPixmap("test_synopis.png")
@@ -55,14 +57,6 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.synopsis.setPixmap(pixmap_syn)
         self.synopsis.mousePressEvent = self.getPos
         self.total_length = 880 # synopsis from 0 to 880
-
-        #self.frames = []
-        #for num in range(299, 300):
-        #    fileName = "image-"+str(num).zfill(4)+".rgb"
-        #    #print(fileName)
-        #    video = readrgb.readrgbtoQImage(self.folderName+fileName)
-        #    #pixmap_vdo = QPixmap.fromImage(video)
-        #    self.frames.append( QPixmap.fromImage(video) )
 
         self.sound = QVideoWidget()
         self.sound.setGeometry(QtCore.QRect(859, 10, 111, 21))
@@ -81,19 +75,22 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile("video_1.wav")))
 
         self.v_thread = Img_Thread(self.updateframe)
+        self.v_thread.signal.connect(self.stop)
 
         
        
     def play(self):
-        print("play")
-        self.paused = 0
+        #print("play")
         if self.soundPlayer.state() != QMediaPlayer.PlayingState:
             self.soundPlayer.play()
         self.image_thread()
+        self.play_btn.setEnabled(False)
+        self.pause_btn.setEnabled(True)
+        self.stop_btn.setEnabled(True)
 
 
     def updateframe(self):
-        print(self.current_frame)
+        #print(self.current_frame)
         fileName = "image-"+str(self.current_frame).zfill(4)+".rgb"
         video = readrgb.readrgbtoQImage(self.folderName+fileName)
         pixmap_vdo = QPixmap.fromImage(video)
@@ -103,25 +100,29 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         
 
     def image_thread(self):
-        
-        self.v_thread.n = self.end_frame - self.current_frame
+        self.v_thread.n = self.end_frame - self.current_frame +1
         self.v_thread.kill = 0
         self.v_thread.start()
 
 
     def pause(self):
-        print("pause")
+        #print("pause")
         if self.soundPlayer.state() == QMediaPlayer.PlayingState:
             self.soundPlayer.pause()
         self.v_thread.kill = 1
+        self.play_btn.setEnabled(True)
         
 
     def stop(self):
-        print("stop")
+        #print("stop")
         if self.soundPlayer.state() != QMediaPlayer.StoppedState:
             self.soundPlayer.stop()
         self.v_thread.kill = 1
         self.current_frame = self.end_frame
+        self.play_btn.setEnabled(False)
+        self.pause_btn.setEnabled(False)
+        self.stop_btn.setEnabled(False)
+
 
 
     def getPos(self, event):
@@ -131,13 +132,18 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #print(x)
         self.start_frame = 1
         self.start_time = 1
-        self.end_frame = 1000
+        self.end_frame = 100
         self.current_frame = self.start_frame
+        self.v_thread.kill = 1
+
         #video = QtGui.QMovie("test.gif")
         #self.video.setMovie(video)
         #video.start()
         self.soundPlayer.setPosition(1)
-        self.soundPlayer.play()
+        #self.soundPlayer.play()
+        if self.soundPlayer.state() == QMediaPlayer.PlayingState:
+            self.v_thread.kill = 1
+            time.sleep(0.03)
         self.play()
         #print(event.pos().x(), event.pos().y())
         
