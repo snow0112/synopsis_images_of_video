@@ -128,14 +128,11 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
     def getPos(self, event):
         x = event.pos().x()
         y = event.pos().y()
-        print(str(x)+"  "+str(y))
-        #print(x)
+        #print(str(x)+"  "+str(y))
         self.start_frame = 1
         self.start_time = 1
-        self.end_frame = 100
+        self.end_frame = 1000
         self.current_frame = self.start_frame
-        self.v_thread.kill = 1
-
         #video = QtGui.QMovie("test.gif")
         #self.video.setMovie(video)
         #video.start()
@@ -143,7 +140,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #self.soundPlayer.play()
         if self.soundPlayer.state() == QMediaPlayer.PlayingState:
             self.v_thread.kill = 1
-            time.sleep(0.03)
+            time.sleep(0.03) # for racing
         self.play()
         #print(event.pos().x(), event.pos().y())
         
