@@ -123,7 +123,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
     def play_video(self):
         self.current_frame = self.start_frame
         self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.audio_file)))
-        self.soundPlayer.setPosition(1)
+        self.soundPlayer.setPosition(self.start_time)
         self.play()
 
     def getfiles(self, idx):
@@ -133,16 +133,16 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         tp = self.metadata[idx]["tp"] # tp = 1: video ; tp = 0: image
         if tp == 1:
             # for video
-            self.folderName = self.metadata[idx]["folder"]#"../../576RGBVideo1/"
+            self.folderName = self.metadata[idx]["folder"] #"../../576RGBVideo1/"
             # self.folderName = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/576RGBVideo1/"
             self.start_frame = self.metadata[idx]["start"] #1
-            self.end_frame = self.metadata[idx]["end"]#1000
+            self.end_frame = self.metadata[idx]["end"] #1000
             self.start_time = (self.start_frame-1)*1000/30
-            self.audio_file = self.metadata[idx]["audio"]#"video_1.wav"
+            self.audio_file = self.metadata[idx]["audio"] #"video_1.wav"
             #self.audio_file = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/video_1.wav"
         else:
             # for image
-            self.fileName = self.metadata[idx]["path"]#"image-0003.rgb"
+            self.fileName = self.metadata[idx]["path"] #"image-0003.rgb"
         return tp # tp = 1: video ; tp = 0: image
 
     def getPos(self, event):
@@ -151,7 +151,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         tp = self.getfiles(x//120) # x//(width of an image = 120)
         if self.soundPlayer.state() == QMediaPlayer.PlayingState:
             self.v_thread.kill = 1
-            time.sleep(0.03) # for racing
+            time.sleep(0.04) # for racing
         if tp:
             self.play_video()
         else:
