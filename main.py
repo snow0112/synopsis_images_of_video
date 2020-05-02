@@ -106,9 +106,11 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
     def show_img(self):
         if self.soundPlayer.state() != QMediaPlayer.StoppedState:
             self.stop()
+            self.play_btn.setEnabled(False)
         video = readrgb.readrgbtoQImage(self.fileName)
         pixmap_vdo = QPixmap.fromImage(video)
         self.video.setPixmap(pixmap_vdo)
+        
 
     def play_video(self):
         self.current_frame = self.start_frame
@@ -127,10 +129,10 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
             self.start_time = 1
             self.audio_file = "video_1.wav"
             #self.audio_file = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/video_1.wav"
-        else:
+        #else:
             # for image
             self.fileName = "image-0003.rgb"
-        return tp # tp = 1: video ; tp = 0: image
+        return idx > 1000 # tp = 1: video ; tp = 0: image
 
     def getPos(self, event):
         x = event.pos().x()
