@@ -163,8 +163,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>936</width>
-              <height>136</height>
+              <width>940</width>
+              <height>138</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -204,7 +204,7 @@
                 <bool>true</bool>
                </property>
                <property name="frameShape">
-                <enum>QFrame::Box</enum>
+                <enum>QFrame::NoFrame</enum>
                </property>
                <property name="text">
                 <string/>

@@ -52,26 +52,18 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #synopsis = QImage(352*5, 288, QImage.Format_RGB32)
         #pixmap_syn = QtGui.QPixmap("test_synopis.png")
         synopsis = readrgb.readrgbtoQImage("test.rgb", 352*25, 288)
-        print(self.synopsis.size())
+        #print(self.synopsis.size())
         pixmap_syn = QPixmap.fromImage(synopsis).scaled(3000, 1440, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         #pixmap_syn.scaledToHeight(100)
         self.synopsis.setPixmap(pixmap_syn)
         self.synopsis.mousePressEvent = self.getPos
-        self.total_length = 880 # synopsis from 0 to 880
+        #self.total_length = 880 # synopsis from 0 to 880
 
         self.sound = QVideoWidget()
         self.sound.setGeometry(QtCore.QRect(859, 10, 111, 21))
         self.sound.setObjectName("sound")
 
         self.soundPlayer = QMediaPlayer(None, QMediaPlayer.LowLatency)
-        #self.soundPlayer.setVideoOutput(videoWidget)
-        #self.soundPlayer.stateChanged.connect(self.mediaStateChanged)
-        #self.soundPlayer.positionChanged.connect(self.positionChanged)
-        #self.soundPlayer.durationChanged.connect(self.durationChanged)
-        #self.soundPlayer.error.connect(self.handleError)
-
-        #fileName = "video_1.avi"
-        #self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
         self.soundPlayer.setAudioRole(2)
         self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile("video_1.wav")))
         # self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile("/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/video_1.wav")))
@@ -141,6 +133,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #self.soundPlayer.play()
         if self.soundPlayer.state() == QMediaPlayer.PlayingState:
             self.v_thread.kill = 1
+            #self.stop()
             time.sleep(0.03) # for racing
         self.play()
         #print(event.pos().x(), event.pos().y())
