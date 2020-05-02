@@ -119,13 +119,13 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         video = readrgb.readrgbtoQImage(self.fileName)
         pixmap_vdo = QPixmap.fromImage(video)
         self.video.setPixmap(pixmap_vdo)
-        self.Displaying.setText("Displaying: " + self.fileName)
+        self.Displaying.setText("Displaying Image: " + self.fileName)
 
     def play_video(self):
         self.current_frame = self.start_frame
         self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.audio_file)))
         self.soundPlayer.setPosition(self.start_time)
-        self.Displaying.setText("Displaying: " + self.folderName)
+        self.Displaying.setText("Displaying Video: " + self.folderName)
         self.play()
 
     def getfiles(self, idx):
