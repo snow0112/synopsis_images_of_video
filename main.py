@@ -77,7 +77,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #print("play")
         #if self.soundPlayer.state() != QMediaPlayer.PlayingState:
         self.soundPlayer.play()
-        self.tic = time.perf_counter()
+        self.tic = -1
         self.image_thread()
         self.play_btn.setEnabled(False)
         self.pause_btn.setEnabled(True)
@@ -93,7 +93,8 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #    time.sleep(0.033333-delay)
         #else:
         #    print(delay)
-        time.sleep(0.03333-time.perf_counter() + self.tic)
+        if self.tic != -1:
+            time.sleep(0.03333-time.perf_counter() + self.tic)
         #self.tic = time.perf_counter()
         self.video.setPixmap(pixmap_vdo)
         self.tic = time.perf_counter()
