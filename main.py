@@ -11,6 +11,7 @@ from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 import traceback, sys
 import json
+import os
 
 class Img_Thread(QThread):
     signal = pyqtSignal('PyQt_PyObject')
@@ -47,13 +48,12 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.play_btn.setEnabled(False)
         self.pause_btn.setEnabled(False)
         self.stop_btn.setEnabled(False)
-
+        
         #read metadata
         file_meta = open('version1_metadata.json',"r")
         self.metadata = json.load(file_meta)
         self.num_img = len(self.metadata)
         file_meta.close()
-
         #synopsis = readrgb.readrgbtoQImage("test.rgb", 352*25, 288)
         #synopsis = readrgb.readrgbtoQImage("test-MySynopsis.rgb", 352*15, 288)
         synopsis = readrgb.readrgbtoQImage("test.rgb", 352*self.num_img, 288)
@@ -140,7 +140,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
     def play_video(self):
         self.current_frame = self.start_frame
-        self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.audio_file)))
+        self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(os.path.abspath(self.audio_file))))
         self.soundPlayer.setPosition(self.start_time)
         self.Displaying.setText("Displaying Video: " + self.folderName)
         self.play()
@@ -188,3 +188,4 @@ if __name__ == "__main__":
     qt_app = MyQtApp()
     qt_app.show()
     sys.exit(app.exec_())
+
