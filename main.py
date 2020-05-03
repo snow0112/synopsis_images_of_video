@@ -72,15 +72,19 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
         self.v_thread = Img_Thread(self.updateframe)
         self.v_thread.signal.connect(self.stop)
-        self.intreval = 1/30
+
+        self.sound_delay = 0.3
+        
        
     def play(self):
         #print("play")
         #if self.soundPlayer.state() != QMediaPlayer.PlayingState:
         #print(self.soundPlayer.position()/1000)
         self.soundPlayer.play()
+        time.sleep(self.sound_delay) # wait for the sound track to play
         self.tic = time.perf_counter()
         self.image_thread()
+        self.soundPlayer.play()
         self.play_btn.setEnabled(False)
         self.pause_btn.setEnabled(True)
         self.stop_btn.setEnabled(True)
@@ -95,8 +99,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         if delay < ontime:
             time.sleep(ontime - delay)
         else:
-            pass
-            #print(delay)
+            print(delay)
         
         self.video.setPixmap(pixmap_vdo)
         #self.tic = time.perf_counter()
@@ -121,7 +124,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         if self.soundPlayer.state() != QMediaPlayer.StoppedState:
             self.soundPlayer.pause()
             #print(self.soundPlayer.position()/1000)
-            #print(self.soundPlayer.position()/1000 - self.end_frame/30)
+            print(self.soundPlayer.position()/1000 - self.end_frame/30)
         self.v_thread.kill = 1
         self.current_frame = self.start_frame
         self.soundPlayer.setPosition(self.start_time)
@@ -140,7 +143,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
     def play_video(self):
         self.current_frame = self.start_frame
-        self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(os.path.abspath(self.audio_file))))
+        self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.audio_file)))
         self.soundPlayer.setPosition(self.start_time)
         self.Displaying.setText("Displaying Video: " + self.folderName)
         self.play()
