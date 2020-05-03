@@ -72,12 +72,14 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
         self.v_thread = Img_Thread(self.updateframe)
         self.v_thread.signal.connect(self.stop)
+        self.intreval = 1/30
        
     def play(self):
         #print("play")
         #if self.soundPlayer.state() != QMediaPlayer.PlayingState:
+        print(self.soundPlayer.position()/1000)
         self.soundPlayer.play()
-        self.tic = -1
+        self.tic = time.perf_counter()
         self.image_thread()
         self.play_btn.setEnabled(False)
         self.pause_btn.setEnabled(True)
@@ -88,16 +90,15 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         fileName = "image-"+str(self.current_frame).zfill(4)+".rgb"
         video = readrgb.readrgbtoQImage(self.folderName+fileName)
         pixmap_vdo = QPixmap.fromImage(video)
+        ontime = (self.current_frame - self.start_frame )/30
         delay = time.perf_counter() - self.tic
-        #if delay < 0.033333:
-        #    time.sleep(0.033333-delay)
-        #else:
-        #    print(delay)
-        if self.tic != -1:
-            time.sleep(0.03333-time.perf_counter() + self.tic)
-        #self.tic = time.perf_counter()
+        if delay < ontime:
+            time.sleep(ontime - delay)
+        else:
+            print(delay)
+        
         self.video.setPixmap(pixmap_vdo)
-        self.tic = time.perf_counter()
+        #self.tic = time.perf_counter()
         #self.video.repaint()
         self.current_frame += 1
         
@@ -118,6 +119,8 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #print("stop")
         if self.soundPlayer.state() != QMediaPlayer.StoppedState:
             self.soundPlayer.pause()
+            print(self.soundPlayer.position()/1000)
+            print(self.soundPlayer.position()/1000 - self.end_frame/30)
         self.v_thread.kill = 1
         self.current_frame = self.start_frame
         self.soundPlayer.setPosition(self.start_time)
@@ -157,8 +160,8 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
             #self.audio_file = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/video_1.wav"
             #print(self.folderName)
             #print(self.audio_file)
-            #print(self.start_frame)
-            print(self.end_frame-self.start_frame)
+            print("start frame = " + str(self.start_frame/30))
+            print("end frame = " + str(self.end_frame/30))
 
         else:
             # for image
