@@ -77,7 +77,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
     def play(self):
         #print("play")
         #if self.soundPlayer.state() != QMediaPlayer.PlayingState:
-        print(self.soundPlayer.position()/1000)
+        #print(self.soundPlayer.position()/1000)
         self.soundPlayer.play()
         self.tic = time.perf_counter()
         self.image_thread()
@@ -95,7 +95,8 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         if delay < ontime:
             time.sleep(ontime - delay)
         else:
-            print(delay)
+            pass
+            #print(delay)
         
         self.video.setPixmap(pixmap_vdo)
         #self.tic = time.perf_counter()
@@ -119,8 +120,8 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #print("stop")
         if self.soundPlayer.state() != QMediaPlayer.StoppedState:
             self.soundPlayer.pause()
-            print(self.soundPlayer.position()/1000)
-            print(self.soundPlayer.position()/1000 - self.end_frame/30)
+            #print(self.soundPlayer.position()/1000)
+            #print(self.soundPlayer.position()/1000 - self.end_frame/30)
         self.v_thread.kill = 1
         self.current_frame = self.start_frame
         self.soundPlayer.setPosition(self.start_time)
@@ -160,8 +161,8 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
             #self.audio_file = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/video_1.wav"
             #print(self.folderName)
             #print(self.audio_file)
-            print("start frame = " + str(self.start_frame/30))
-            print("end frame = " + str(self.end_frame/30))
+            #print("start frame = " + str(self.start_frame/30))
+            #print("end frame = " + str(self.end_frame/30))
 
         else:
             # for image
