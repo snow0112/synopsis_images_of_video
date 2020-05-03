@@ -29,7 +29,8 @@ class Img_Thread(QThread):
             try:
                 self.fn()
             except Exception as e:
-                break
+                print(e)
+                continue
             if i == self.n-1:
                 self.signal.emit(0)
             #self.msleep(32)
@@ -87,8 +88,13 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         fileName = "image-"+str(self.current_frame).zfill(4)+".rgb"
         video = readrgb.readrgbtoQImage(self.folderName+fileName)
         pixmap_vdo = QPixmap.fromImage(video)
-        time.sleep( 0.033 - time.perf_counter() + self.tic )
-        #print(time.perf_counter() - self.tic)
+        delay = time.perf_counter() - self.tic
+        #if delay < 0.033333:
+        #    time.sleep(0.033333-delay)
+        #else:
+        #    print(delay)
+        time.sleep(0.03333-time.perf_counter() + self.tic)
+        #self.tic = time.perf_counter()
         self.video.setPixmap(pixmap_vdo)
         self.tic = time.perf_counter()
         #self.video.repaint()
@@ -151,7 +157,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
             #print(self.folderName)
             #print(self.audio_file)
             #print(self.start_frame)
-            #print(self.end_frame)
+            print(self.end_frame-self.start_frame)
 
         else:
             # for image
