@@ -94,6 +94,8 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         fileName = "image-"+str(self.current_frame).zfill(4)+".rgb"
         video = readrgb.readrgbtoQImage(self.folderName+fileName)
         pixmap_vdo = QPixmap.fromImage(video)
+
+
         ontime = (self.current_frame - self.start_frame )/30
         delay = time.perf_counter() - self.tic
         if delay < ontime:
@@ -145,6 +147,11 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.current_frame = self.start_frame
         self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.audio_file)))
         self.soundPlayer.setPosition(self.start_time)
+        fileName = "image-"+str(self.start_frame).zfill(4)+".rgb"
+        video = readrgb.readrgbtoQImage(self.folderName+fileName)
+        pixmap_vdo = QPixmap.fromImage(video)
+        self.current_frame += 1
+        self.video.setPixmap(pixmap_vdo)
         self.Displaying.setText("Displaying Video: " + self.folderName)
         self.play()
 
