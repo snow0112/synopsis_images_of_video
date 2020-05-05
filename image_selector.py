@@ -9,6 +9,8 @@ from __future__ import print_function
 import os
 from glob import glob
 import tempfile
+
+
 import cv2
 import numpy as np
 from sklearn.cluster import KMeans
@@ -159,7 +161,6 @@ class ImageSelector(object):
         # Kmeans clustering on the histograms
         kmeans = KMeans(n_clusters=self.nb_clusters, random_state=0).fit(all_hists)
         labels = kmeans.labels_
-
         # Identifying the label for each image in the cluster and tagging them
         files_clusters_index_array = []
         for i in np.arange(self.nb_clusters):
@@ -250,7 +251,7 @@ class ImageSelector(object):
         self.nb_clusters = number_of_frames
 
         filtered_images_list = []
-
+        index_list = []
         # Selecting only those images which have good brishtness and contrast
         input_key_frames = self.__filter_optimum_brightness_and_contrast_images__(
             input_key_frames
@@ -267,8 +268,10 @@ class ImageSelector(object):
             for index in selected_images_index:
                 img = input_key_frames[index]
                 filtered_images_list.append(img)
+                index_list.append(index)
         else:
             # if number of required files are less than requested key-frames return all the files
-            for img in input_key_frames:
-                filtered_images_list.append(img)
-        return filtered_images_list
+            for i in len(input_key_frames):
+                filtered_images_list.append(input_key_frames[i])
+                index_list.append(i)
+        return filtered_images_list, index_list

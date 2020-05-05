@@ -118,7 +118,7 @@ def savergbfile(arr3d, w):
 	#print(arr.shape)
 	#print(arr[:10])
 	# file = open("test-MySynopsis.rgb", "wb")
-	file = open("test.rgb", "wb")
+	file = open("version2_synopsis.rgb", "wb")
 	binary_format = bytearray(arr)
 	file.write(binary_format)
 	file.close()

@@ -4,27 +4,46 @@ import cv2
 import json
 
 """
-@ Input: root folder path 
+@ Input: root folder path, and tag for video or images
 @ Output: a list of list rgb filelist in each folder
 
 This function aims to get all the rgb file in each sub folder.
 And each folder's rgb file in a single list and return a list of list
-e.g listoflist[0]:include all rgb file in 576RGBVideo1
-    listoflist[1]:include all rgb file in 576RGBVideo2
+e.g res[0]:include all rgb file in Video1
+    res[1]:include all rgb file in Video2
 """
-def get_filelist(folder_path):
-    listoflist = []
+def get_filelist(folder_path, tag):
+    res = []
     for root, dirs, files in os.walk(folder_path, topdown = False):
-        cur_list = []
-        if ("576RGBVideo" in root):
+        if (tag in root):
             for file_name in files:
                 if ".rgb" in file_name:
-                    path = os.path.join(root, file_name)
-                    cur_list.append(path)
-            cur_list.sort()
-            listoflist.append(cur_list)
+                    # path = os.path.join(root, file_name)
+                    # res.append(path)
+                    res.append(tag+"/"+file_name)
+        res.sort()
 
-    return listoflist
+    return res
+    # for root, dirs, files in os.walk(folder_path, topdown = False):
+    #     print(sorted(dirs))
+    #     if tag == "video":
+    #         cur_list = []
+    #         if ("video" in root):
+    #             for file_name in files:
+    #                 if ".rgb" in file_name:
+    #                     path = os.path.join(root, file_name)
+    #                     cur_list.append(path)
+    #             cur_list.sort()
+    #             res.append(cur_list)
+    #     else: 
+    #         if ("image" in root):
+    #             for file_name in files:
+    #                 if ".rgb" in file_name:
+    #                     path = os.path.join(root, file_name)
+    #                     res.append(path)
+    #             res.sort()
+
+    # return res
 
 def metadata_addvideo(folder_name, start_frame, end_frame, audio_file):
     videodict = {}

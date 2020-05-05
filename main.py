@@ -50,13 +50,13 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.stop_btn.setEnabled(False)
         
         #read metadata
-        file_meta = open('version1_metadata.json',"r")
+        file_meta = open('version2_metadata.json',"r")
         self.metadata = json.load(file_meta)
         self.num_img = len(self.metadata)
         file_meta.close()
         #synopsis = readrgb.readrgbtoQImage("test.rgb", 352*25, 288)
         #synopsis = readrgb.readrgbtoQImage("test-MySynopsis.rgb", 352*15, 288)
-        synopsis = readrgb.readrgbtoQImage("test.rgb", 352*self.num_img, 288)
+        synopsis = readrgb.readrgbtoQImage("version2_synopsis.rgb", 352*self.num_img, 288)
         #print(self.synopsis.size())
         self.total_length = 120*self.num_img # synopsis from 0 to total length
         pixmap_syn = QPixmap.fromImage(synopsis).scaled(120*self.num_img, 1440, Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -81,7 +81,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #if self.soundPlayer.state() != QMediaPlayer.PlayingState:
         #print(self.soundPlayer.position()/1000)
         self.soundPlayer.play()
-        time.sleep(self.sound_delay) # wait for the sound track to play
+        # time.sleep(self.sound_delay) # wait for the sound track to play
         self.tic = time.perf_counter()
         self.image_thread()
         self.soundPlayer.play()
@@ -140,12 +140,13 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
             self.play_btn.setEnabled(False)
         video = readrgb.readrgbtoQImage(self.fileName)
         pixmap_vdo = QPixmap.fromImage(video)
+
         self.video.setPixmap(pixmap_vdo)
         self.Displaying.setText("Displaying Image: " + self.fileName)
 
     def play_video(self):
         self.current_frame = self.start_frame
-        self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.audio_file)))
+        self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(os.path.abspath(self.audio_file))))
         self.soundPlayer.setPosition(self.start_time)
         fileName = "image-"+str(self.start_frame).zfill(4)+".rgb"
         video = readrgb.readrgbtoQImage(self.folderName+fileName)
