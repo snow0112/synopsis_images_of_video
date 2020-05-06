@@ -80,11 +80,14 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #print("play")
         #if self.soundPlayer.state() != QMediaPlayer.PlayingState:
         #print(self.soundPlayer.position()/1000)
+        #time.sleep(0.05)
+        print(self.v_thread.isFinished())
+        self.thistimestart_frame = self.current_frame -1
         self.soundPlayer.play()
-        # time.sleep(self.sound_delay) # wait for the sound track to play
+        #time.sleep(self.sound_delay) # wait for the sound track to play
         self.tic = time.perf_counter()
         self.image_thread()
-        self.soundPlayer.play()
+        #self.soundPlayer.play()
         self.play_btn.setEnabled(False)
         self.pause_btn.setEnabled(True)
         self.stop_btn.setEnabled(True)
@@ -94,16 +97,18 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         fileName = "image-"+str(self.current_frame).zfill(4)+".rgb"
         video = readrgb.readrgbtoQImage(self.folderName+fileName)
         pixmap_vdo = QPixmap.fromImage(video)
-
-
-        ontime = (self.current_frame - self.start_frame )/30
+        ontime = (self.current_frame - self.thistimestart_frame )/30
         delay = time.perf_counter() - self.tic
         if delay < ontime:
+            if (ontime-delay) > 0.033:
+                print("long wait", ontime-delay)
             time.sleep(ontime - delay)
         else:
-            print(delay)
+            print("too late", delay-ontime)
+            #self.current_frame += 1
         
         self.video.setPixmap(pixmap_vdo)
+        #print(self.current_frame)
         self.current_frame += 1
         
     def image_thread(self):
@@ -113,9 +118,17 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
     def pause(self):
         #print("pause")
-        if self.soundPlayer.state() == QMediaPlayer.PlayingState:
-            self.soundPlayer.pause()
+
+        #if self.soundPlayer.state() == QMediaPlayer.PlayingState:
+        self.soundPlayer.pause()
         self.v_thread.kill = 1
+        
+        time.sleep(0.04)
+        print(self.v_thread.isFinished())
+        print(self.current_frame)
+        self.current_frame = self.soundPlayer.position()*30//1000+1
+        print(self.current_frame)
+
         self.play_btn.setEnabled(True)
         self.pause_btn.setEnabled(False)
         
@@ -144,7 +157,8 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
     def play_video(self):
         self.current_frame = self.start_frame
-        self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(os.path.abspath(self.audio_file))))
+        #self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(os.path.abspath(self.audio_file)))) # mac
+        self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.audio_file)))
         self.soundPlayer.setPosition(self.start_time)
         fileName = "image-"+str(self.start_frame).zfill(4)+".rgb"
         video = readrgb.readrgbtoQImage(self.folderName+fileName)
