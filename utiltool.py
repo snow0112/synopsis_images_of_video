@@ -2,6 +2,10 @@ import os
 import imagetool
 import cv2
 import json
+from PIL import Image, ImageOps, ImageFilter
+from PIL import ImageEnhance
+import imutils
+import numpy as np
 
 """
 @ Input: root folder path, and tag for video or images
@@ -60,26 +64,39 @@ def metadata_addimage(file_name):
     imagedict["path"] = file_name
     return imagedict
 
-metadata = []
-for i in range(5):
-    metadata.append( metadata_addvideo("../../576RGBVideo1/", 1, 100,"../../video_1.wav") )
-    metadata.append( metadata_addvideo("../../576RGBVideo2/", 1, 100,"../../video_2.wav") )
-    metadata.append( metadata_addvideo("../../576RGBVideo3/", 1, 90,"../../video_3.wav") )
-    metadata.append( metadata_addvideo("../../576RGBVideo4/", 1, 100,"../../video_4.wav") )
-    metadata.append( metadata_addimage("../../Image/RGB/image-0003.rgb") )
-#metajson = json.dumps(metadata)
-with open('metadata.json', 'w') as json_file:
-  json.dump(metadata, json_file)
-#print(metajson)
+# metadata = []
+# for i in range(5):
+#     metadata.append( metadata_addvideo("../../576RGBVideo1/", 1, 100,"../../video_1.wav") )
+#     metadata.append( metadata_addvideo("../../576RGBVideo2/", 1, 100,"../../video_2.wav") )
+#     metadata.append( metadata_addvideo("../../576RGBVideo3/", 1, 90,"../../video_3.wav") )
+#     metadata.append( metadata_addvideo("../../576RGBVideo4/", 1, 100,"../../video_4.wav") )
+#     metadata.append( metadata_addimage("../../Image/RGB/image-0003.rgb") )
+# #metajson = json.dumps(metadata)
+# with open('metadata.json', 'w') as json_file:
+#   json.dump(metadata, json_file)
+# #print(metajson)
 
 
-# if __name__ == "__main__":
-#     path = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia"
-#     list_of_list = get_filelist(path)
-#     testimage = list_of_list[0][0]
-#     img = readrgb.readrgbfile(testimage)
-#     cv2.imshow("Image", img) 
-#     cv2.waitKey (0)
-#     cv2.destroyAllWindows()
-    # print(img)
+if __name__ == "__main__":
+    # img = imagetool.fast_readrgbfile("wed_synopsis.rgb", 352*15, 288)
+    # img = Image.fromarray(img, mode = None)
+    img = Image.open('before-processing.png')
+    for i in range(1, 15):
+        cropped_image = img.crop((352*i-15, 0, 352*i+15, 288))
+        blur = cropped_image.filter(ImageFilter.GaussianBlur(radius = 3))
+        img.paste(blur, (352*i-15, 0, 352*i+15, 288))
+    
+    width, height = img.size
+    sharp = ImageEnhance.Sharpness(img).enhance(1.5)
+    contrast = ImageEnhance.Contrast(sharp).enhance(1.5)
+    out = ImageOps.expand(contrast, (5, 20), fill='white')
 
+    finial_img = out.resize((width, height),Image.ANTIALIAS)
+    finial_img.show()
+    finial_img.save("after-processing.png")
+    img = cv2.imread("after-processing.png")
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    imagetool.savergbfile(img, 15, "wed_synopsis.rgb")
+    pass
+
+    

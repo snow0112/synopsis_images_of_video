@@ -157,7 +157,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
     def play_video(self):
         self.current_frame = self.start_frame
-        #self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(os.path.abspath(self.audio_file)))) # mac
+        # self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(os.path.abspath(self.audio_file)))) # mac
         self.soundPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.audio_file)))
         self.soundPlayer.setPosition(self.start_time)
         fileName = "image-"+str(self.start_frame).zfill(4)+".rgb"
