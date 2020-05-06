@@ -24,7 +24,8 @@ def get_img_diff(imageA, imageB):
 
     # compute the Structural Similarity Index (SSIM) between the two
     # images, ensuring that the difference image is returned
-    (score_ssim, diff) = ssim(grayA, grayB, gaussian_weightsbool=True, full=True)
+    score_ssim = ssim(imageA, imageB, multichannel=True ,gaussian_weightsbool=True)
+	
     # print(diff)
     # compute the Histogram feasure between the two images [0, 1]
     # hist1 = cv2.calcHist([grayA], [0], None, [256], [0.0,255.0]) 
@@ -34,7 +35,8 @@ def get_img_diff(imageA, imageB):
     score_hist = cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL)
 
     score = 0.7 * score_ssim + 0.3 * score_hist
-    return score
+	#  score = score_ssim
+    return score_ssim
 
 
 """

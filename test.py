@@ -97,25 +97,25 @@ def select_candidates(cur_video, scene_list, n):
 
 
 if __name__ == "__main__":
-    # set_start_method('spawn')
-    # n_processes = cpu_count()
-    # pool_selector = Pool(n_processes)
+    # # set_start_method('spawn')
+    # # n_processes = cpu_count()
+    # # pool_selector = Pool(n_processes)
 
-    list_of_list = test_getall_rgbfiles("/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia")
+    # list_of_list = test_getall_rgbfiles("/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia")
     
-    cur_video = list_of_list[0]
-    starttime = datetime.now()
+    # cur_video = list_of_list[0]
+    # starttime = datetime.now()
 
-    # img = imagetool.fast_readrgbfile(cur_video[1])
-    for i in range(0 , 1):
-        img = imagetool.fast_readrgbfile(cur_video[i])
-    # res = map(imagetool.fast_readrgbfile, cur_video[0:30])
-    # reslist = list(res)
-    print("Time: {}".format(datetime.now()-starttime))
-    # cv2.imshow("img", cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+    # # img = imagetool.fast_readrgbfile(cur_video[1])
+    # for i in range(0 , 1):
+    #     img = imagetool.fast_readrgbfile(cur_video[i])
+    # # res = map(imagetool.fast_readrgbfile, cur_video[0:30])
+    # # reslist = list(res)
+    # print("Time: {}".format(datetime.now()-starttime))
+    # # cv2.imshow("img", cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
 
-    # cv2.waitKey (0)
-    # cv2.destroyAllWindows()
+    # # cv2.waitKey (0)
+    # # cv2.destroyAllWindows()
 
     # videos_scene = []
     # videos_scene.append([[0, 44], [45, 387], [388, 594], [595, 854], [855, 991], [992, 1283], [1284, 1392], [1393, 1450], [1451, 1790], [1791, 2260], [2261, 2453], [2454, 2551]])
@@ -157,7 +157,13 @@ if __name__ == "__main__":
     # for i in range(0, len(cur_video)):
     #     imagetool.writeRGBToJPG(cur_video[i], "video4/" + str(i) + '.jpg')
     #     print(i)
-    
+    path = "./TestData/"
+    all_videos_name = []
+    for i in range(1, 5):
+        name = "video"+str(i)
+        all_videos_name.append(utiltool.get_filelist(path, name))
+    test_get_similar_scores(path+all_videos_name[1][700], path+all_videos_name[1][750])
+    # print(all_videos_name[1])
     # res = find_scene_boundary(cur_video, 0, len(cur_video), 5)
     # print(res)
-    # test_get_similar_scores(list_of_list[1][44], list_of_list[1][45])
+
