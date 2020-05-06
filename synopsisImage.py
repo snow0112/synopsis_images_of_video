@@ -136,6 +136,7 @@ class Synopsis_Image:
         pre_score = -1
         scene_list = []
         scene_start = 0
+        scene_end = 0
         for i in range(start+k, end, k):
             cur_img = imagetool.fast_readrgbfile(path+cur_video[i]) 
             cur_score = imagetool.get_img_diff(pre_img, cur_img)
@@ -190,7 +191,7 @@ class Synopsis_Image:
             for frame in cur_video:
                 metadata.append(utiltool.metadata_addvideo(folder, frame[0]+1, frame[1]+1, folder+"audio.wav"))
         for img in candidates_images:
-            metadata.append( utiltool.metadata_addimage(img))
+            metadata.append( utiltool.metadata_addimage("/TestData/"+img))
         return metadata
 
 if __name__ == "__main__":
@@ -201,7 +202,7 @@ if __name__ == "__main__":
     my_synopsis = Synopsis_Image()
 
 
-    path = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/"
+    path = "./TestData/"
     all_videos_name = []
     for i in range(1, 5):
         name = "video"+str(i)
@@ -211,12 +212,12 @@ if __name__ == "__main__":
     key_video_shots, key_video_frames = my_synopsis.extract_keyframe_for_videos(path, all_videos_name, image_selecter)
     key_images_name, key_images = my_synopsis.extract_key_framses_from_images(path, all_images_name, image_selecter)
     metadata = my_synopsis.generateMetaData(key_video_shots, key_images_name)
-    with open('version2_metadata.json', 'w') as json_file:
+    with open('version_2.json', 'w') as json_file:
         json.dump(metadata, json_file)
 
     final_key_frames = key_video_frames + key_images
     res = imagetool.combine_rgbimages(final_key_frames)
-    imagetool.savergbfile(res,len(final_key_frames))
+    imagetool.savergbfile(res,len(final_key_frames), "version_2.rgb") #wed_synopsis
     cv2.imshow("synopsis", cv2.cvtColor(res, cv2.COLOR_RGB2BGR))
     cv2.waitKey (0)
     cv2.destroyAllWindows()

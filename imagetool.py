@@ -106,7 +106,7 @@ def combine_rgbimages(image_list):
 	return np.array(synopsis)
 
 	
-def savergbfile(arr3d, w):
+def savergbfile(arr3d, w, name):
 	#print("save file")
 	# print(arr3d.shape)
 	arr3d = arr3d.transpose(1,0,2)
@@ -118,7 +118,7 @@ def savergbfile(arr3d, w):
 	#print(arr.shape)
 	#print(arr[:10])
 	# file = open("test-MySynopsis.rgb", "wb")
-	file = open("version2_synopsis.rgb", "wb")
+	file = open(name, "wb")
 	binary_format = bytearray(arr)
 	file.write(binary_format)
 	file.close()

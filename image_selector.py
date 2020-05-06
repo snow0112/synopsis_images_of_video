@@ -271,7 +271,7 @@ class ImageSelector(object):
                 index_list.append(index)
         else:
             # if number of required files are less than requested key-frames return all the files
-            for i in len(input_key_frames):
+            for i in range(0, len(input_key_frames)):
                 filtered_images_list.append(input_key_frames[i])
                 index_list.append(i)
         return filtered_images_list, index_list

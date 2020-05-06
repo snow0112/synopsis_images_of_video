@@ -50,12 +50,13 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.stop_btn.setEnabled(False)
         
         #read metadata
-        file_meta = open('version2_metadata.json',"r")
+        file_meta = open('version_2.json',"r")
         self.metadata = json.load(file_meta)
         self.num_img = len(self.metadata)
         file_meta.close()
 
-        synopsis = readrgb.readrgbtoQImage("version2_synopsis.rgb", 352*self.num_img, 288)
+        # synopsis = readrgb.readrgbtoQImage("version2_synopsis.rgb", 352*self.num_img, 288)
+        synopsis = readrgb.readrgbtoQImage("version_2.rgb", 352*self.num_img, 288)
         #print(self.synopsis.size())
         self.total_length = 120*self.num_img # synopsis from 0 to total length
         pixmap_syn = QPixmap.fromImage(synopsis).scaled(120*self.num_img, 1440, Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -135,7 +136,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         if self.soundPlayer.state() != QMediaPlayer.StoppedState:
             self.stop()
             self.play_btn.setEnabled(False)
-        video = readrgb.readrgbtoQImage(self.fileName)
+        video = readrgb.readrgbtoQImage("."+self.fileName)
         pixmap_vdo = QPixmap.fromImage(video)
 
         self.video.setPixmap(pixmap_vdo)
