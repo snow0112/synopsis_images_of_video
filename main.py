@@ -73,7 +73,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.v_thread = Img_Thread(self.updateframe)
         self.v_thread.signal.connect(self.stop)
 
-        self.sound_delay = 0.3
+        self.sound_delay = 0
         
        
     def play(self):
@@ -81,10 +81,10 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #if self.soundPlayer.state() != QMediaPlayer.PlayingState:
         #print(self.soundPlayer.position()/1000)
         #time.sleep(0.05)
-        print(self.v_thread.isFinished())
+        #print(self.v_thread.isFinished())
         self.thistimestart_frame = self.current_frame -1
         self.soundPlayer.play()
-        #time.sleep(self.sound_delay) # wait for the sound track to play
+        time.sleep(self.sound_delay) # wait for the sound track to play
         self.tic = time.perf_counter()
         self.image_thread()
         #self.soundPlayer.play()
@@ -100,12 +100,12 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         ontime = (self.current_frame - self.thistimestart_frame )/30
         delay = time.perf_counter() - self.tic
         if delay < ontime:
-            if (ontime-delay) > 0.033:
-                print("long wait", ontime-delay)
+            #if (ontime-delay) > 0.033:
+            #    print("long wait", ontime-delay)
             time.sleep(ontime - delay)
-        else:
-            print("too late", delay-ontime)
-            #self.current_frame += 1
+        #else:
+        #    print("too late", delay-ontime)
+            
         
         self.video.setPixmap(pixmap_vdo)
         #print(self.current_frame)
@@ -124,10 +124,10 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.v_thread.kill = 1
         
         time.sleep(0.04)
-        print(self.v_thread.isFinished())
-        print(self.current_frame)
+        #print(self.v_thread.isFinished())
+        #print(self.current_frame)
         self.current_frame = self.soundPlayer.position()*30//1000+1
-        print(self.current_frame)
+        #print(self.current_frame)
 
         self.play_btn.setEnabled(True)
         self.pause_btn.setEnabled(False)
