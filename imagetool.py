@@ -108,11 +108,11 @@ def combine_rgbimages(image_list):
 	
 def savergbfile(arr3d, w):
 	#print("save file")
-	print(arr3d.shape)
+	# print(arr3d.shape)
 	arr3d = arr3d.transpose(1,0,2)
-	print(arr3d.shape)
+	# print(arr3d.shape)
 	arr3d = arr3d.transpose()
-	print(arr3d.shape)
+	# print(arr3d.shape)
 	totallength = 304128*w
 	arr = arr3d.reshape((totallength,))
 	#print(arr.shape)

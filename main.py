@@ -54,8 +54,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.metadata = json.load(file_meta)
         self.num_img = len(self.metadata)
         file_meta.close()
-        #synopsis = readrgb.readrgbtoQImage("test.rgb", 352*25, 288)
-        #synopsis = readrgb.readrgbtoQImage("test-MySynopsis.rgb", 352*15, 288)
+
         synopsis = readrgb.readrgbtoQImage("version2_synopsis.rgb", 352*self.num_img, 288)
         #print(self.synopsis.size())
         self.total_length = 120*self.num_img # synopsis from 0 to total length
@@ -104,8 +103,6 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
             print(delay)
         
         self.video.setPixmap(pixmap_vdo)
-        #self.tic = time.perf_counter()
-        #self.video.repaint()
         self.current_frame += 1
         
     def image_thread(self):

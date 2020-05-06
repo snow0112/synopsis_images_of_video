@@ -17,7 +17,7 @@ class Synopsis_Image:
         
         videos_scene = []
         for i in range(0,len(all_videos)):
-            scene_list = self.find_scene_boundary(path, all_videos[i], 0, len(all_videos[i]), 10)
+            scene_list = self.find_scene_boundary(path, all_videos[i], 0, len(all_videos[i]), 30)
             videos_scene.append(scene_list)
         for group in videos_scene:
             print(group)
@@ -25,16 +25,68 @@ class Synopsis_Image:
         for i in range(0, len(videos_scene)):
             cur_video = all_videos[i]
             cur_video_scene = videos_scene[i]
-            candidates_frames.extend(self.select_candidates(path, cur_video, cur_video_scene, 20))
+            candidates_frames.extend(self.select_candidates(path, cur_video, cur_video_scene, 50))
 
         final_key_frames = []
         for cand in candidates_frames:
-            frame_list, _ = image_selecter.select_best_frames(cand, 1) # can optimize with face detection
+            frame_list, _ = image_selecter.select_best_frames(cand, 5) # can optimize with face detection
+            # if 5 candidates have faces images, then pick one of them
+            face_frames = []
+            for frame in frame_list:
+                face_nums = face_detection.detect_face(frame)
+                if face_nums > 0 : face_frames.append(frame)
+            
+            if len(face_frames) > 0:
+                frame_list, _ = image_selecter.select_best_frames(face_frames, 1)
+            else:
+                frame_list, _ = image_selecter.select_best_frames(frame_list, 1)
+            
             for frame in frame_list:
                 final_key_frames.append(frame)
-
+        
+        videos_scene, final_key_frames = self.video_postprocessing(videos_scene, final_key_frames)
         return videos_scene, final_key_frames
 
+    def video_postprocessing(self, videos_scene, key_frames):
+        print("---- Begin post-processing ----")
+        final_videos_scene = []
+        final_key_frames = []
+        # case 1: compare(1, 3) if similar merge(1...3) otherwise compare(1, 2)
+        offset = 0
+        for video in videos_scene:
+            i = 0
+            cur_video_scene = []
+            while (i < len(video)):
+                 # each video frames scan neighbor and merge similar scene
+                inc = 0
+                if (i + 2 < len(video)):
+                    cur_img = key_frames[i+offset]
+                    next_img = key_frames[i+1+offset]
+                    next2_img = key_frames[i+2+offset]
+                    similar2 = imagetool.get_img_diff(cur_img, next2_img)
+                    similar1 = imagetool.get_img_diff(cur_img, next_img)
+                    print("similar1 {} similar2 {}".format(similar1, similar2))
+                    if similar2 >= 0.4:
+                        cur_video_scene.append([video[i][0], video[i+2][1]])
+                        print("merge {} with {}".format(i+offset, i+2+offset))
+                        inc = 3
+                    elif similar1 >= 0.4:
+                        cur_video_scene.append([video[i][0], video[i+1][1]])
+                        print("merge {} with {}".format(i+offset, i+1+offset))
+                        inc = 2
+                    else:
+                        cur_video_scene.append([video[i][0], video[i][1]])
+                        inc = 1
+                else:
+                    cur_video_scene.append([video[i][0], video[i][1]])
+                    inc = 1
+                final_key_frames.append(key_frames[i+offset])
+                i += inc
+            final_videos_scene.append(cur_video_scene)
+            offset += len(video)
+        print(final_videos_scene)
+        return final_videos_scene, final_key_frames
+        
 
     def extract_key_framses_from_images(self, root, all_images_path, image_selecter):
         candidates_images = []
@@ -120,7 +172,12 @@ class Synopsis_Image:
             k = (end - start) // n+1 if end - start > n else 1
             for i in range(start, end+1, k):
                 cand = imagetool.fast_readrgbfile(path + cur_video[i])
-                candidates.append(cand)
+                num_of_faces = face_detection.detect_face(cand)
+                if num_of_faces >= 1:
+                    candidates.append(cand)
+                elif random.random() <= 0.4:
+                    candidates.append(cand)
+                    
             candidates_list.append(candidates)
         
         return candidates_list
