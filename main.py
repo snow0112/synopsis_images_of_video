@@ -101,13 +101,24 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         fileName = "image-"+str(self.current_frame).zfill(4)+".rgb"
         video = readrgb.readrgbtoQImage(self.folderName+fileName)
         pixmap_vdo = QPixmap.fromImage(video)
+
+        '''
+        delay = self.soundPlayer.position()*1000 - self.current_frame/30
+        if delay > 0:
+            print(delay)
+            time.sleep(delay)
+        elif delay < - 0.03:
+            print(-delay)
+        '''
+
+
         ontime = (self.current_frame - self.thistimestart_frame )/30
         delay = time.perf_counter() - self.tic
         if delay < ontime:
             #if (ontime-delay) > 0.033:
             #    print("long wait", ontime-delay)
             time.sleep(ontime - delay)
-        else:
+        elif delay-ontime > 0.02:
             print("too late", delay-ontime)
             
         
