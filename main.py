@@ -24,7 +24,6 @@ class Img_Thread(QThread):
 
     def run(self):
         for i in range(self.n):
-            #print("i= "+str(i))
             if self.kill == 1:
                 break
             try:
@@ -34,7 +33,6 @@ class Img_Thread(QThread):
                 continue
             if i == self.n-1:
                 self.signal.emit(0)
-            #self.msleep(32)
 
 class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow): 
     def __init__(self):
@@ -74,8 +72,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.v_thread.n = 0
         self.v_thread.start()
 
-        self.sound_delay = 0
-        
+        self.sound_delay = 0 # for windows
        
     def play(self):
         self.thistimestart_frame = self.current_frame -1
@@ -196,4 +193,3 @@ if __name__ == "__main__":
     qt_app = MyQtApp()
     qt_app.show()
     sys.exit(app.exec_())
-
