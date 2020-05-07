@@ -56,9 +56,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         file_meta.close()
         print(self.num_img)
 
-        # synopsis = readrgb.readrgbtoQImage("version2_synopsis.rgb", 352*self.num_img, 288)
         synopsis = readrgb.readrgbtoQImage("final.rgb", 352*self.num_img, 288)
-        #print(self.synopsis.size())
         self.total_length = 120*self.num_img # synopsis from 0 to total length
         pixmap_syn = QPixmap.fromImage(synopsis).scaled(120*self.num_img, 1440, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.synopsis.setPixmap(pixmap_syn)
@@ -80,15 +78,10 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         
        
     def play(self):
-        #print("play")
-        #if self.soundPlayer.state() != QMediaPlayer.PlayingState:
-        #print(self.soundPlayer.position()/1000)
-        #time.sleep(0.05)
-        #print(self.v_thread.isFinished())
         self.thistimestart_frame = self.current_frame -1
         self.soundPlayer.play()
-        #time.sleep(self.sound_delay) # wait for the sound track to play
-        while self.soundPlayer.position() <= 1:
+        #time.sleep(self.sound_delay) # wait for the sound track to play (for mac)
+        while self.soundPlayer.position() <= 1: # busy waiting for windows
             pass
         self.tic = time.perf_counter()
         self.image_thread()
@@ -106,14 +99,11 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         # sync to sound position
         delay = self.current_frame/30 - self.soundPlayer.position()/1000
         if delay > 0:
-            #print("wait", delay)
             time.sleep(delay)
-        elif delay < - 0.03:
+        elif delay < - 0.5:
             print("late", delay)
-        
-
         '''
-        # absolute time
+        # absolute time for mac
         ontime = (self.current_frame - self.thistimestart_frame )/30
         delay = time.perf_counter() - self.tic
         if delay < ontime:
@@ -123,10 +113,7 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         elif delay-ontime > 0.5:
             print("too late", delay-ontime)
         '''
-            
-        
         self.video.setPixmap(pixmap_vdo)
-        #print(self.current_frame)
         self.current_frame += 1
         
     def image_thread(self):
@@ -135,27 +122,17 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.v_thread.start()
 
     def pause(self):
-        #print("pause")
-
-        #if self.soundPlayer.state() == QMediaPlayer.PlayingState:
         self.soundPlayer.pause()
         self.v_thread.kill = 1
-        
         time.sleep(0.04)
-        #print(self.v_thread.isFinished())
-        print(self.current_frame)
         self.current_frame = self.soundPlayer.position()*30//1000+1
-        print(self.current_frame)
 
         self.play_btn.setEnabled(True)
         self.pause_btn.setEnabled(False)
         
     def stop(self):
-        #print("stop")
         if self.soundPlayer.state() != QMediaPlayer.StoppedState:
             self.soundPlayer.pause()
-            #print(self.soundPlayer.position()/1000)
-            #print(self.soundPlayer.position()/1000 - self.end_frame/30)
         self.v_thread.kill = 1
         self.current_frame = self.start_frame
         self.soundPlayer.setPosition(self.start_time)
@@ -169,7 +146,6 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
             self.play_btn.setEnabled(False)
         video = readrgb.readrgbtoQImage("."+self.fileName)
         pixmap_vdo = QPixmap.fromImage(video)
-
         self.video.setPixmap(pixmap_vdo)
         self.Displaying.setText("Displaying Image: " + self.fileName)
 
@@ -187,24 +163,16 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.play()
 
     def getfiles(self, idx):
-        #print(idx)
         if idx >= self.num_img:
             idx = self.num_img-1
         tp = self.metadata[idx]["tp"] # tp = 1: video ; tp = 0: image
         if tp == 1:
             # for video
-            self.folderName = "."+self.metadata[idx]["folder"] #"../../576RGBVideo1/"
-            # self.folderName = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/576RGBVideo1/"
-            self.start_frame = self.metadata[idx]["start"] #1
-            self.end_frame = self.metadata[idx]["end"] #1000
+            self.folderName = "."+self.metadata[idx]["folder"] 
+            self.start_frame = self.metadata[idx]["start"] 
+            self.end_frame = self.metadata[idx]["end"]
             self.start_time = (self.start_frame-1)*1000/30
-            self.audio_file = "."+self.metadata[idx]["audio"] #"video_1.wav"
-            #self.audio_file = "/Users/luckyjustin/Documents/JustinProject/576Project/CSCI576ProjectMedia/video_1.wav"
-            #print(self.folderName)
-            #print(self.audio_file)
-            #print("start frame = " + str(self.start_frame/30))
-            #print("end frame = " + str(self.end_frame/30))
-
+            self.audio_file = "."+self.metadata[idx]["audio"] 
         else:
             # for image
             self.fileName = self.metadata[idx]["path"] #"image-0003.rgb"
@@ -212,7 +180,6 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
     def getPos(self, event):
         x = event.pos().x()
-        #print(x)
         tp = self.getfiles(x//120) # x//(width of an image = 120)
         if self.soundPlayer.state() == QMediaPlayer.PlayingState:
             self.v_thread.kill = 1
