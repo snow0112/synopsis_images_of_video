@@ -72,6 +72,8 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
         self.v_thread = Img_Thread(self.updateframe)
         self.v_thread.signal.connect(self.stop)
+        self.v_thread.n = 0
+        self.v_thread.start()
 
         self.sound_delay = 0
         
@@ -84,7 +86,9 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         #print(self.v_thread.isFinished())
         self.thistimestart_frame = self.current_frame -1
         self.soundPlayer.play()
-        time.sleep(self.sound_delay) # wait for the sound track to play
+        #time.sleep(self.sound_delay) # wait for the sound track to play
+        while self.soundPlayer.position() <= 1:
+            pass
         self.tic = time.perf_counter()
         self.image_thread()
         #self.soundPlayer.play()
@@ -103,8 +107,8 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
             #if (ontime-delay) > 0.033:
             #    print("long wait", ontime-delay)
             time.sleep(ontime - delay)
-        #else:
-        #    print("too late", delay-ontime)
+        else:
+            print("too late", delay-ontime)
             
         
         self.video.setPixmap(pixmap_vdo)
@@ -125,9 +129,9 @@ class MyQtApp(multimediaUI.Ui_MainWindow, QtWidgets.QMainWindow):
         
         time.sleep(0.04)
         #print(self.v_thread.isFinished())
-        #print(self.current_frame)
+        print(self.current_frame)
         self.current_frame = self.soundPlayer.position()*30//1000+1
-        #print(self.current_frame)
+        print(self.current_frame)
 
         self.play_btn.setEnabled(True)
         self.pause_btn.setEnabled(False)
