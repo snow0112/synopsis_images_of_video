@@ -17,7 +17,7 @@ class Synopsis_Image:
         
         videos_scene = []
         for i in range(0,len(all_videos)):
-            scene_list = self.find_scene_boundary(path, all_videos[i], 0, len(all_videos[i]), 50)
+            scene_list = self.find_scene_boundary(path, all_videos[i], 0, len(all_videos[i]), 15)
             videos_scene.append(scene_list)
         for group in videos_scene:
             print(group)
